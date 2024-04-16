@@ -1,11 +1,12 @@
 using System;
 using UnityEngine;
 
-public class Character : MonoBehaviour
+public class Player : MonoBehaviour
 {
     public float speed;
     public int age;
-    [SerializeField] private float health;
+    [SerializeField] private float maxHealth;
+    private float health;
     [SerializeField] private float spinAngle;
     private double physicsAcceleration;
     [SerializeField] private string characterName;
@@ -14,6 +15,7 @@ public class Character : MonoBehaviour
     [SerializeField] private Bullet bulletPrefab;
     [SerializeField] private float bulletDelay = 0.5f;
     private float currentBulletDelay;
+    private bool canShoot;
 
     public int Sum(int number1, int number2)
     {
@@ -76,6 +78,7 @@ public class Character : MonoBehaviour
          */
         SayName();
         print("Esto es el awake");
+        health = maxHealth;
     }
 
     private void Start()
@@ -155,7 +158,7 @@ public class Character : MonoBehaviour
 
         // CalculateRotation(horizontal);
 
-        if (Input.GetButton("Fire1") && currentBulletDelay >= bulletDelay)
+        if (Input.GetButton("Fire1") && canShoot && currentBulletDelay >= bulletDelay)
         {
             Shoot();
         }
@@ -181,5 +184,28 @@ public class Character : MonoBehaviour
         Vector3 rotationZ = Vector3.forward * 35;
         Vector3 rotationAxis = (rotationX + rotationZ).normalized;
         transform.Rotate(rotationAxis, spinAngle, Space.World);
+    }
+
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
+        if (health <= 0)
+        {
+            health = 0;
+        }
+    }
+
+    public void HealDamage(float healingAmount)
+    {
+        health += healingAmount;
+        if (health > maxHealth)
+        {
+            health = maxHealth;
+        }
+    }
+
+    public void SetCanShoot(bool canShoot)
+    {
+        this.canShoot = canShoot;
     }
 }

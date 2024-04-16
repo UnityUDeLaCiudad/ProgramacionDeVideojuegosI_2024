@@ -11,13 +11,13 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - PlayerBullets
+  - Enemy
+  - EnemyBullets
+  - Items
+  - TriggerAreas
+  - ExcluderArea
   - 
   - 
   - 
