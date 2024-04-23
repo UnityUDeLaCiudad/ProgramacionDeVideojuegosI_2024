@@ -10,10 +10,10 @@ public class Player : MonoBehaviour
     [SerializeField] private float spinAngle;
     private double physicsAcceleration;
     [SerializeField] private string characterName;
-    [SerializeField] private Vector3 initialPosition;
     [SerializeField] private Vector3 offsetPosition;
     [SerializeField] private Bullet bulletPrefab;
     [SerializeField] private float bulletDelay = 0.5f;
+    [SerializeField] private Rigidbody myRigidbody;
     private float currentBulletDelay;
     private bool canShoot;
 
@@ -26,11 +26,8 @@ public class Player : MonoBehaviour
     public void FuncionTest()
     {
         var suma = 4 + 4;
-        var resta = 4 - 4;
         var multiplicacion = 4 * 4;
         var division = 4 / 4;
-        var sumaCompleja = 4 + 4 + 18;
-        var operacionCompleja = (4 - 2 * 3) / 6;
 
         suma = suma + 1;
         suma += 1;
@@ -46,16 +43,7 @@ public class Player : MonoBehaviour
         division = division / 3;
         division /= 3;
 
-        var modulo = 4 % 2;
-
-        var esMenor = 6 < 8;
-        var esMenorOIgual = 6 <= 8;
-        var esMayor = 6 > 8;
-        var esMayorOIgual = 6 >= 8;
-
         bool isNamePanchito = characterName == "Panchito";
-        bool isNameNotPanchito = characterName != "Panchito";
-
         // isAlive = health > 0;
         // bool isDead = !isAlive;
         //
@@ -105,13 +93,6 @@ public class Player : MonoBehaviour
         // {
         //     print("Panchito esta muerto");
         // }
-
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
-        Vector3 rightAxis = horizontal * transform.right;
-        Vector3 forwardAxis = vertical * transform.forward;
-        Vector3 direction = rightAxis + forwardAxis;
-        direction.y = 0;
 
         currentBulletDelay += Time.deltaTime;
 
@@ -168,6 +149,32 @@ public class Player : MonoBehaviour
             Rotate();
         }
 
+        // PhysicLessMovement();
+        PhysicsMovement();
+    }
+
+    private void PhysicsMovement()
+    {
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+        Vector3 rightAxis = horizontal * transform.right;
+        Vector3 forwardAxis = vertical * transform.forward;
+        Vector3 direction = rightAxis + forwardAxis;
+        direction.y = 0;
+        direction = direction.normalized;
+        Vector3 intendedSpeed = direction * speed;
+        intendedSpeed.y = myRigidbody.velocity.y; 
+        myRigidbody.velocity = intendedSpeed;
+    }
+
+    private void PhysicLessMovement()
+    {
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+        Vector3 rightAxis = horizontal * transform.right;
+        Vector3 forwardAxis = vertical * transform.forward;
+        Vector3 direction = rightAxis + forwardAxis;
+        direction.y = 0;
         direction = direction.normalized;
 
         transform.position += direction * (speed * Time.deltaTime);
