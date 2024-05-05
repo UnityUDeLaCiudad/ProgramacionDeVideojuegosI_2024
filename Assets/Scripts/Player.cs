@@ -163,7 +163,7 @@ public class Player : MonoBehaviour
         direction.y = 0;
         direction = direction.normalized;
         Vector3 intendedSpeed = direction * speed;
-        intendedSpeed.y = myRigidbody.velocity.y; 
+        intendedSpeed.y = myRigidbody.velocity.y;
         myRigidbody.velocity = intendedSpeed;
     }
 
@@ -211,8 +211,54 @@ public class Player : MonoBehaviour
         }
     }
 
+    public enum Difficulty
+    {
+        Easy,
+        EasyMedium,
+        Medium,
+        MediumAdvanced,
+        Hard,
+        DarkSouls
+    }
+
     public void SetCanShoot(bool canShoot)
     {
         this.canShoot = canShoot;
+    }
+
+    private void SetEnemyAmount(int amount)
+    {
+    }
+
+    private void SetEnemyDamageRange()
+    {
+    }
+
+    public void SetDifficulty(Difficulty difficulty)
+    {
+        switch (difficulty)
+        {
+            case Difficulty.Easy:
+                // setear enemigos en dificultad facil
+                break;
+            case Difficulty.EasyMedium:
+                //setear enemigos en dificultad easymedium
+                break;
+            case Difficulty.Medium:
+                SetEnemyAmount(2);
+                //Codigo que setea un valor en A
+                break;
+            case Difficulty.MediumAdvanced:
+                SetEnemyAmount(2);
+                SetEnemyDamageRange();
+                break;
+            case Difficulty.Hard:
+                break;
+            case Difficulty.DarkSouls:
+                break;
+            default:
+                Debug.Log("el valor de difficulty no esta contemplado");
+                break;
+        }
     }
 }
