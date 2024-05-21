@@ -261,4 +261,16 @@ public class Player : MonoBehaviour
                 break;
         }
     }
+
+    public void Move()
+    {
+        Vector3 asdf = new Vector3(0, 0, 1);
+        if (asdf != Vector3.zero)
+        {
+        }
+        int initialNumber = 10;
+        initialNumber += 4;
+        initialNumber /= 3;
+        print(initialNumber);
+    }
 }
