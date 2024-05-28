@@ -1,6 +1,7 @@
-using System;
+using Singleton;
 using UnityEngine;
-
+using System;
+using UnityEngine.Events;
 public class Player : MonoBehaviour
 {
     public float speed;
@@ -16,6 +17,9 @@ public class Player : MonoBehaviour
     [SerializeField] private Rigidbody myRigidbody;
     private float currentBulletDelay;
     private bool canShoot;
+
+    public event Action<float> OnDeath;
+    public UnityEvent<float> OnDeathUnity;
 
     public int Sum(int number1, int number2)
     {
@@ -67,12 +71,16 @@ public class Player : MonoBehaviour
         SayName();
         print("Esto es el awake");
         health = maxHealth;
+        ;
     }
 
     private void Start()
     {
         print("Esto es el start");
         transform.position += offsetPosition;
+
+        GameManager.Instance.PlayerCreated(this);
+        GameManager.Instance.LoadLevelAdditive("LevelUI");
     }
 
     private void Shoot()
@@ -83,61 +91,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        //Si el personaje esta vivo, entonces lo muevo y lo roto
-        // if (health > 0)
-        // {
-        //     transform.position += offsetPosition;
-        //     // Rotate();
-        // }
-        // else
-        // {
-        //     print("Panchito esta muerto");
-        // }
-
         currentBulletDelay += Time.deltaTime;
-
-        // //Chequear movimiento
-        // if (Input.GetKey(KeyCode.W))
-        // {
-        //     //Mover hacia adelante
-        //     print("Me muevo hacia adelante");
-        //     Vector3 forward = transform.forward;
-        //     direction += forward;
-        //     // transform.position += forward * (speed * Time.deltaTime);
-        // }
-        //
-        // if (Input.GetKey(KeyCode.S))
-        // {
-        //     //Mover hacia atras
-        //     print("Me muevo hacia atras");
-        //     Vector3 forward = transform.forward;
-        //     direction -= forward;
-        //     // transform.position -= forward * (speed * Time.deltaTime);
-        // }
-        //
-        // if (Input.GetKey(KeyCode.A))
-        // {
-        //     //Mover hacia la izquierda
-        //     print("Me muevo hacia la izquierda");
-        //     Vector3 right = transform.right;
-        //     direction -= right;
-        //     // transform.position -= right * (speed * Time.deltaTime);
-        // }
-        //
-        // if (Input.GetKey(KeyCode.D))
-        // {
-        //     //Mover hacia la derecha
-        //     print("Me muevo hacia la derecha");
-        //     Vector3 right = transform.right;
-        //     direction += right;
-        // }
-
-        // if (Input.GetMouseButtonDown(0))
-        // {
-        //     Shoot();
-        // }
-
-        // CalculateRotation(horizontal);
 
         if (Input.GetButton("Fire1") && canShoot && currentBulletDelay >= bulletDelay)
         {
@@ -180,10 +134,6 @@ public class Player : MonoBehaviour
         transform.position += direction * (speed * Time.deltaTime);
     }
 
-    // private void CalculateRotation(float horizontal)
-    // {
-    //     transform.Rotate(Vector3.up, spinAngle * horizontal * Time.deltaTime, Space.Self);
-    // }
 
     private void Rotate()
     {
@@ -195,10 +145,15 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        var previousHealth = health;
         health -= damage;
         if (health <= 0)
         {
             health = 0;
+            //TODO: Evento de muerte del jugador
+            OnDeath?.Invoke(previousHealth); //? null propagation
+            // ??= null coalescence
+            OnDeathUnity?.Invoke(previousHealth);
         }
     }
 
@@ -268,6 +223,7 @@ public class Player : MonoBehaviour
         if (asdf != Vector3.zero)
         {
         }
+
         int initialNumber = 10;
         initialNumber += 4;
         initialNumber /= 3;
